@@ -30,7 +30,7 @@
 | **RNF05** | Las respuestas de los endpoints de la API REST se emitirán estrictamente en formato JSON, implementando los códigos de estado HTTP estándar (200, 201, 400, 404, etc.) para cada petición[cite: 1]. | Interoperabilidad |
 
 ## 3.4 Casos de uso principales
-*(Aquí se insertará la imagen exportada del diagrama de casos de uso)*[cite: 1]
+![Diagrama de Casos de Uso](caso-uso-web.png)
 
 ## 3.5 Alcance y Supuestos
 * **Temática del negocio:** El sistema estará orientado exclusivamente a la venta de calzado. Al no manejar control de stock dinámico para simplificar el modelo, el talle (size) y la marca (brand) seleccionados se registrarán como detalles directamente en el pedido.
