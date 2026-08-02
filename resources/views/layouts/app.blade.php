@@ -25,7 +25,7 @@
                     @endif
 
                     @if(Auth::user()->role === 'admin')
-                        <a href="#" class="btn btn-admin">Panel Admin</a>
+                        <a href="{{ route('categorias.index') }}" class="btn btn-admin">Panel Admin</a>
                     @endif
 
                     <form method="POST" action="{{ route('logout') }}" class="form-logout">
