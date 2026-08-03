@@ -20,12 +20,15 @@
 
                 @auth
                     @if(Auth::user()->role === 'cliente')
-                        <a href="#" class="nav-link">Mis Pedidos</a>
-                        <a href="#" class="nav-link">Lista de Deseos</a>
+                        <a href="{{ route('cart.index') }}" class="nav-link">Carrito</a>
+                        <a href="{{ route('pedidos.mios') }}" class="nav-link">Mis Pedidos</a>
+                        <a href="{{ route('wishlist.index') }}" class="nav-link">Lista de Deseos</a>
                     @endif
 
                     @if(Auth::user()->role === 'admin')
-                        <a href="{{ route('categorias.index') }}" class="btn btn-admin">Panel Admin</a>
+                        <a href="{{ route('categorias.index') }}" class="btn btn-admin">Categorías</a>
+                        <a href="{{ route('productos.index') }}" class="btn btn-admin">Productos</a>
+                        <a href="{{ route('admin.pedidos.index') }}" class="btn btn-admin">Pedidos</a>
                     @endif
 
                     <form method="POST" action="{{ route('logout') }}" class="form-logout">
