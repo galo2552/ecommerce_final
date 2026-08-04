@@ -16,7 +16,7 @@
 | **RF06** | Al finalizar el checkout, el sistema debe registrar el pedido y asignarle por defecto el estado inicial de "pendiente"[cite: 1]. | Sistema |
 | **RF07** | El sistema debe permitir al administrador crear, leer, actualizar y eliminar (CRUD) productos del catálogo[cite: 1]. | Administrador |
 | **RF08** | El sistema debe permitir al administrador crear, leer, actualizar y eliminar (CRUD) categorías[cite: 1]. | Administrador |
-| **RF09** | El sistema debe permitir al cliente dejar una reseña (calificación y comentario) únicamente en productos que haya comprado y cuyo pedido esté en estado "entregado"[cite: 1]. | Cliente |
+| **RF09** | El sistema debe permitir a cualquier cliente registrado dejar una reseña (calificación y comentario) en los productos del catálogo. | Cliente |
 | **RF10** | El sistema debe permitir al administrador modificar el estado de un pedido siguiendo el flujo estricto: pendiente, pagado, enviado, entregado o cancelado[cite: 1]. | Administrador |
 | **RF11** | El sistema debe permitir al cliente agregar y quitar productos de su lista de deseos (wishlist)[cite: 1]. | Cliente |
 
@@ -29,7 +29,7 @@
 | **RNF04** | Las contraseñas de los usuarios se almacenarán en la base de datos de forma encriptada, utilizando los algoritmos de hashing nativos provistos por el framework[cite: 1]. | Seguridad |
 | **RNF05** | Las respuestas de los endpoints de la API REST se emitirán estrictamente en formato JSON, implementando los códigos de estado HTTP estándar (200, 201, 400, 404, etc.) para cada petición[cite: 1]. | Interoperabilidad |
 
-## 3.4 Casos de uso principales
+## 3.4 Casos de uso
 ![Diagrama de Casos de Uso](caso-uso-web.png)
 
 ## 3.5 Alcance y Supuestos

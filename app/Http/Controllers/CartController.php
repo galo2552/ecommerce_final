@@ -5,8 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Address;
 use App\Models\Order;
 use App\Models\Product;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\AddToCartRequest;
+use App\Http\Requests\CheckoutRequest;
 
 class CartController extends Controller
 {
@@ -14,17 +15,14 @@ class CartController extends Controller
     {
         $carrito = session('carrito', []);
         $total = collect($carrito)->sum(fn ($item) => $item['price'] * $item['quantity']);
+        
+        $direcciones = Auth::user()->addresses; 
 
-        return view('client.cart', compact('carrito', 'total'));
+        return view('client.cart', compact('carrito', 'total', 'direcciones'));
     }
 
-    public function store(Request $request, Product $producto)
+    public function store(AddToCartRequest $request, Product $producto)
     {
-        $request->validate([
-            'size' => ['required', 'string', 'max:10'],
-            'quantity' => ['required', 'integer', 'min:1'],
-        ]);
-
         $carrito = session('carrito', []);
         $clave = $producto->id . '_' . $request->size;
 
@@ -41,7 +39,6 @@ class CartController extends Controller
         }
 
         session(['carrito' => $carrito]);
-
         return back()->with('success', 'Producto agregado a tu pedido.');
     }
 
@@ -54,7 +51,7 @@ class CartController extends Controller
         return back()->with('success', 'Producto quitado del pedido.');
     }
 
-    public function checkout(Request $request)
+    public function checkout(CheckoutRequest $request)
     {
         $carrito = session('carrito', []);
 
@@ -62,26 +59,24 @@ class CartController extends Controller
             return back()->with('error', 'Tu carrito está vacío.');
         }
 
-        $request->validate([
-            'street' => ['required', 'string', 'max:255'],
-            'city' => ['required', 'string', 'max:255'],
-            'province' => ['required', 'string', 'max:255'],
-            'zip_code' => ['required', 'string', 'max:20'],
-        ]);
-
-        $direccion = Address::create([
-            'user_id' => Auth::id(),
-            'street' => $request->street,
-            'city' => $request->city,
-            'province' => $request->province,
-            'zip_code' => $request->zip_code,
-        ]);
+        if ($request->filled('address_id')) {
+            $direccionId = $request->address_id;
+        } else {
+            $direccion = Address::create([
+                'user_id' => Auth::id(),
+                'street' => $request->street,
+                'city' => $request->city,
+                'province' => $request->province,
+                'zip_code' => $request->zip_code,
+            ]);
+            $direccionId = $direccion->id;
+        }
 
         $total = collect($carrito)->sum(fn ($item) => $item['price'] * $item['quantity']);
 
         $pedido = Order::create([
             'user_id' => Auth::id(),
-            'address_id' => $direccion->id,
+            'address_id' => $direccionId,
             'total' => $total,
             'status' => 'pendiente',
         ]);
@@ -95,7 +90,6 @@ class CartController extends Controller
         }
 
         session()->forget('carrito');
-
         return redirect()->route('pedidos.mios')->with('success', 'Pedido realizado con éxito.');
     }
 }

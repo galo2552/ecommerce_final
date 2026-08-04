@@ -1,58 +1,66 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Trabajo Final - ZapasApp (E-commerce de Zapatillas)
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## 1. Descripción del Proyecto y Alcance Funcional
+ZapasApp es un sistema completo de e-commerce desarrollado en Laravel 11. 
 
-## About Laravel
+**Alcance funcional:**
+- **Clientes:** Pueden registrarse, iniciar sesión, navegar el catálogo filtrando por categorías, agregar productos a una lista de deseos, armar un carrito de compras con talle y cantidad, realizar pedidos y dejar reseñas (calificación y comentario) en los productos comprados.
+- **Administradores:** Poseen un panel exclusivo (protegido por Middleware) con un CRUD completo para Categorías y Productos, además de un gestor de Pedidos para visualizar y actualizar el estado de los envíos (pendiente, pagado, enviado, entregado, cancelado).
+- **Fuera de alcance:** No se implementó una pasarela de pago real (la orden se genera al confirmar el carrito).
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 2. Instrucciones de Instalación
+Siga estos pasos para levantar el proyecto localmente:
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+1. Clonar el repositorio.
+2. Instalar dependencias de PHP:
+    composer install
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+3. Instalar dependencias de Node.js:
+    npm install && npm run build
 
-## Learning Laravel
+4. Configurar variables de entorno (Copiar el archivo de ejemplo y generar la key):
+    cp .env.example .env
+    php artisan key:generate
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+5. Configurar la base de datos en el archivo .env y correr migraciones con seeders:
+    php artisan migrate --seed
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+6. Iniciar el servidor de desarrollo:
+    php artisan serve
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
 
-## Agentic Development
+## 3. Credenciales de Prueba (Generadas por el Seeder)
+- **Administrador:** admin@admin.com | Clave: admin123
+- **Cliente:** cliente@cliente.com | Clave: cliente123
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
 
-```bash
-composer require laravel/boost --dev
+## 4. Diagrama Entidad-Relación (E-R)
+![Diagram ER](docs/esquema_zapasapp.png)
 
-php artisan boost:install
-```
+- **users:** Diferenciados por el campo ENUM role.
+- **categories y products:** Relación N:M mediante pivote category_product.
+- **orders:** Relación 1:N con users y addresses.
+- **order_items:** Pivote N:M entre pedidos y productos, guarda precio unitario, cantidad y talle.
+- **reviews y wishlists:** Relacionan users con products.
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
 
-## Contributing
+## 5. Decisiones de Diseño Relevantes
+- **Arquitectura MVC y Controladores Delgados:** Se delegó toda la lógica de validación de formularios a los FormRequests para mantener los controladores limpios.
+- **Route Model Binding:** Se implementó para inyectar modelos directamente en las rutas, evitando consultas redundantes a la base de datos.
+- **Diseño UI/UX Custom:** Se optó por una arquitectura de CSS puro modularizado (catalog.css, product.css, admin.css) integrados mediante Vite, logrando un diseño moderno, responsivo y sin frameworks pesados de frontend.
+- **Seguridad:** Rutas de administración protegidas por un Middleware custom (EnsureUserIsAdmin).
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
 
-## Code of Conduct
+## 6. Rutas Principales y API REST
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+**Rutas Web (Principales):**
+- GET / : Catálogo de productos.
+- GET /producto/{producto} : Detalle y reseñas.
+- GET|POST|DELETE /carrito : Gestión del carrito y checkout.
+- GET /mis-pedidos : Historial de compras del cliente.
+- RESOURCE /categorias y /productos : Panel Admin (CRUD).
 
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+**Endpoints API REST (JSON):**
+- GET /api/products : Listado completo del catálogo.
+- GET /api/products/{id} : Detalle de un producto específico.
+- GET /api/orders : Pedidos del usuario (Requiere estar autenticado en la sesión web).

@@ -50,28 +50,55 @@
         <h2 class="form-title">Dirección de envío</h2>
         <form action="{{ route('cart.checkout') }}" method="POST">
             @csrf
-            <div class="form-group">
-                <label class="form-label">Calle y número</label>
-                <input type="text" name="street" class="form-input" value="{{ old('street') }}">
-                @error('street')<span class="error-message">{{ $message }}</span>@enderror
+            
+            @if($direcciones->count() > 0)
+                <div class="form-group">
+                    <label class="form-label">Mis direcciones guardadas</label>
+                    <select name="address_id" class="form-input" id="address_select">
+                        <option value="">+ Cargar una nueva dirección...</option>
+                        @foreach($direcciones as $dir)
+                            <option value="{{ $dir->id }}">{{ $dir->street }}, {{ $dir->city }} ({{ $dir->zip_code }})</option>
+                        @endforeach
+                    </select>
+                </div>
+                <hr style="margin: 1.5rem 0; border: 1px dashed #cbd5e1;">
+            @endif
+
+            <div id="new_address_fields">
+                <div class="form-group">
+                    <label class="form-label">Calle y número</label>
+                    <input type="text" name="street" class="form-input" value="{{ old('street') }}">
+                    @error('street')<span class="error-message">{{ $message }}</span>@enderror
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Ciudad</label>
+                    <input type="text" name="city" class="form-input" value="{{ old('city') }}">
+                    @error('city')<span class="error-message">{{ $message }}</span>@enderror
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Provincia</label>
+                    <input type="text" name="province" class="form-input" value="{{ old('province') }}">
+                    @error('province')<span class="error-message">{{ $message }}</span>@enderror
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Código Postal</label>
+                    <input type="text" name="zip_code" class="form-input" value="{{ old('zip_code') }}">
+                    @error('zip_code')<span class="error-message">{{ $message }}</span>@enderror
+                </div>
             </div>
-            <div class="form-group">
-                <label class="form-label">Ciudad</label>
-                <input type="text" name="city" class="form-input" value="{{ old('city') }}">
-                @error('city')<span class="error-message">{{ $message }}</span>@enderror
-            </div>
-            <div class="form-group">
-                <label class="form-label">Provincia</label>
-                <input type="text" name="province" class="form-input" value="{{ old('province') }}">
-                @error('province')<span class="error-message">{{ $message }}</span>@enderror
-            </div>
-            <div class="form-group">
-                <label class="form-label">Código Postal</label>
-                <input type="text" name="zip_code" class="form-input" value="{{ old('zip_code') }}">
-                @error('zip_code')<span class="error-message">{{ $message }}</span>@enderror
-            </div>
-            <button type="submit" class="btn btn-primary w-full">Confirmar Pedido</button>
+
+            <button type="submit" class="btn btn-primary w-full" style="margin-top: 1rem;">Confirmar Pedido</button>
         </form>
     </div>
+
+    <script>
+        const select = document.getElementById('address_select');
+        const newFields = document.getElementById('new_address_fields');
+        if(select) {
+            select.addEventListener('change', function() {
+                newFields.style.display = this.value !== '' ? 'none' : 'block';
+            });
+        }
+    </script>
 @endif
 @endsection

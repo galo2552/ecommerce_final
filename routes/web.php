@@ -22,6 +22,10 @@ Route::get('/', function (\Illuminate\Http\Request $request) {
     return view('welcome', compact('products', 'categories', 'wishlistIds'));
 });
 
+Route::get('/producto/{producto}', function (\App\Models\Product $producto) {
+    $producto->load('reviews.user', 'categories');
+    return view('client.products.show', compact('producto'));
+})->name('producto.show');
 
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
@@ -51,6 +55,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/carrito/{producto}', [\App\Http\Controllers\CartController::class, 'store'])->name('cart.store');
     Route::delete('/carrito/{clave}', [\App\Http\Controllers\CartController::class, 'destroy'])->name('cart.destroy');
     Route::post('/carrito-confirmar', [\App\Http\Controllers\CartController::class, 'checkout'])->name('cart.checkout');
+
+    Route::post('/producto/{producto}/resenas', [\App\Http\Controllers\ReviewController::class, 'store'])->name('reviews.store');
 });
 });
 
@@ -65,6 +71,8 @@ Route::middleware(['auth', 'admin'])->group(function () {
         ->name('admin.pedidos.index');
     Route::put('/pedidos/{pedido}/estado', [\App\Http\Controllers\AdminOrderController::class, 'updateStatus'])
         ->name('admin.pedidos.updateStatus');
+        
+    Route::delete('/resenas/{review}', [\App\Http\Controllers\ReviewController::class, 'destroy'])->name('admin.reviews.destroy');
 });
 
 Route::prefix('api')->group(function () {
