@@ -59,9 +59,11 @@ class CartController extends Controller
             return back()->with('error', 'Tu carrito está vacío.');
         }
 
+        // si elige una guardada
         if ($request->filled('address_id')) {
             $direccionId = $request->address_id;
         } else {
+            // si no elige una guardada, crea una nueva
             $direccion = Address::create([
                 'user_id' => Auth::id(),
                 'street' => $request->street,

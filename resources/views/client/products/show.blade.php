@@ -53,6 +53,45 @@
                         </div>
                         <button type="submit" class="btn btn-primary w-full btn-large">Agregar al Carrito</button>
                     </form>
+                    @auth
+        @if(Auth::user()->role === 'cliente')
+            <form action="{{ route('cart.store', $producto) }}" method="POST" class="cart-form">
+                @csrf
+                <div class="cart-inputs">
+                    <div class="input-group">
+                        <label class="form-label">Talle</label>
+                        <input type="text" name="size" class="form-input" placeholder="Ej: 42" required>
+                    </div>
+                    <div class="input-group">
+                        <label class="form-label">Cantidad</label>
+                        <input type="number" name="quantity" class="form-input" value="1" min="1" required>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary w-full btn-large">Agregar al Carrito</button>
+            </form>
+
+            @php
+                $esFavorito = Auth::user()->wishlists()->where('product_id', $producto->id)->exists();
+            @endphp
+
+            @if($esFavorito)
+                <form action="{{ route('wishlist.destroy', $producto) }}" method="POST" style="margin-top: 1rem;">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn btn-logout w-full" style="border: 1px solid var(--danger-color); padding: 0.75rem; border-radius: var(--radius-md);">
+                        Quitar de Lista de Deseos
+                    </button>
+                </form>
+            @else
+                <form action="{{ route('wishlist.store', $producto) }}" method="POST" style="margin-top: 1rem;">
+                    @csrf
+                    <button type="submit" class="btn btn-admin w-full" style="padding: 0.75rem;">
+                        Agregar a Lista de Deseos
+                    </button>
+                </form>
+            @endif
+        @endif
+    @endauth
                 @endif
             @else
                 <div class="alert alert-info">
